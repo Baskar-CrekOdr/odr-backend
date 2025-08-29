@@ -19,6 +19,37 @@ const formLimiter = rateLimit({
 router.get("/profile", profileHandler);
 router.put("/profile", profileHandler);
 
+// Get user lists (excluding current logged-in user)
+router.get("/list", async (req: AuthRequest, res) => {
+  try {
+    if (!req.user) {
+      return res.status(401).json({ error: "Authentication required" });
+    }
+
+    const users = await prisma.user.findMany({
+      where: {
+        id: { not: req.user.id },
+      },
+      select: {
+        id: true,
+        name: true,
+        email: true,
+      },
+    });
+
+    res.json({
+      users: users.map(user => ({
+        value: user.id,
+        label: user.name,
+        supportLabel: user.email
+      }))
+    });
+  } catch (error) {
+    console.error("Error fetching users:", error);
+    res.status(500).json({ error: "Internal server error" });
+  }
+});
+
 // Stats route
 router.get("/stats", async (req: AuthRequest, res) => {
   try {
