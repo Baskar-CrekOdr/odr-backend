@@ -156,7 +156,7 @@ model IdeaSubmission {
   rejected           Boolean   @default(false)
   rejectionReason    String?
   visibility         Visibility  @default(PUBLIC)
-  collaborators      String[]    @default([])   // array of user IDs
+  inviteCollaborators String[]    @default([])   // array of user IDs
 
   // Relationships
   owner User @relation(fields: [ownerId], references: [id])

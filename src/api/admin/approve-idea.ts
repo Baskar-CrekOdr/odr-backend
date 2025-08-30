@@ -45,7 +45,7 @@ router.get("/", async (req: AuthRequest, res) => {
 
     // Build a lookup for collaborator ID → name
     const collaboratorIds = submissions
-      .flatMap((submission: any) => submission.collaborators ?? [])
+      .flatMap((submission: any) => submission.inviteCollaborators ?? [])
       .filter((id: string) => !!id);
 
     const users = await prisma.user.findMany({
@@ -73,7 +73,7 @@ router.get("/", async (req: AuthRequest, res) => {
         odrExperience: submission.priorOdrExperience || "",
         visibility: submission.visibility as Visibility,
         // Convert collaborator IDs → names
-        collaborators: (submission.collaborators ?? [])
+        inviteCollaborators: (submission.inviteCollaborators ?? [])
           .map((id: string) => userMap.get(id))
           .filter(Boolean),
         consent: true, // Assuming consent is implied in your system

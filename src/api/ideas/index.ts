@@ -62,7 +62,7 @@ authenticatedRouter.post("/submit", formLimiter, async (req: AuthRequest, res) =
   if (!parseResult.success) {
     return res.status(400).json({ error: "Invalid input", details: parseResult.error.flatten() });
   }
-  const { title, caption, description, priorOdrExperience, visibility, collaborators } = parseResult.data;
+  const { title, caption, description, priorOdrExperience, visibility, inviteCollaborators } = parseResult.data;
   try {
     // Since we've used the ensureAuthenticated middleware, req.user is guaranteed to be defined
     const submission = await prisma.ideaSubmission.create({
@@ -73,7 +73,7 @@ authenticatedRouter.post("/submit", formLimiter, async (req: AuthRequest, res) =
         priorOdrExperience: priorOdrExperience || null,
         ownerId: req.user!.id, // Non-null assertion since middleware guarantees this
         visibility: visibility as "PUBLIC" | "PRIVATE",
-        collaborators: collaborators || [],
+        inviteCollaborators: inviteCollaborators || [],
       },
       include: { owner: true },
     });
@@ -849,7 +849,7 @@ const ideaSubmissionSchema = z.object({
   description: z.string().min(10).max(2000).transform((v: string) => sanitizeString(v)),
   priorOdrExperience: z.string().max(500).optional().nullable().transform((v: string | null | undefined) => (v ? sanitizeString(v) : v)),
   visibility: z.string().min(1, "Visibility is required").refine(val => val === "PUBLIC" || val === "PRIVATE", { message: "Visibility must be either 'public' or 'private'" }),
-  collaborators: z.array(z.string().uuid()).optional(),
+  inviteCollaborators: z.array(z.string().uuid()).optional(),
 });
 
 // Zod schema for admin idea creation
