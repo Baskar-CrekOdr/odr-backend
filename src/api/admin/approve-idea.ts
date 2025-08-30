@@ -2,6 +2,7 @@ import { Router } from "express";
 import prisma from "../../lib/prisma";
 import { authenticateJWT } from "../../middleware/auth";
 import { AuthRequest } from "../../types/auth";
+import { Visibility } from "@prisma/client";
 
 const router = Router();
 router.use(authenticateJWT);
@@ -42,6 +43,18 @@ router.get("/", async (req: AuthRequest, res) => {
       orderBy: { createdAt: "desc" },
     });
 
+    // Build a lookup for collaborator ID → name
+    const collaboratorIds = submissions
+      .flatMap((submission: any) => submission.collaborators ?? [])
+      .filter((id: string) => !!id);
+
+    const users = await prisma.user.findMany({
+      where: { id: { in: collaboratorIds } },
+      select: { id: true, name: true }
+    });
+
+    const userMap = new Map(users.map(u => [u.id, u.name]));
+
     // Map submissions to match the expected frontend format
     const formattedSubmissions = submissions.map((submission: any) => {
       // Get institution from the appropriate role-specific model
@@ -58,6 +71,11 @@ router.get("/", async (req: AuthRequest, res) => {
         ideaCaption: submission.caption || "",
         description: submission.description,
         odrExperience: submission.priorOdrExperience || "",
+        visibility: submission.visibility as Visibility,
+        // Convert collaborator IDs → names
+        collaborators: (submission.collaborators ?? [])
+          .map((id: string) => userMap.get(id))
+          .filter(Boolean),
         consent: true, // Assuming consent is implied in your system
         approved: false, // Not approved yet
         createdAt: submission.createdAt.toISOString(),
