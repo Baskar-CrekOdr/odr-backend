@@ -131,6 +131,7 @@ model Idea {
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
   approved    Boolean  @default(false)
+  visibility  Visibility @default(PUBLIC)
 
   // Relationships
   owner         User               @relation(fields: [ownerId], references: [id])

@@ -330,7 +330,8 @@ authenticatedRouter.get("/:id", async (req: AuthRequest, res: Response) => {
       mentors: idea.mentors.map(mentor => ({
         ...mentor,
         user: processUserFields(mentor.user)
-      }))
+      })),
+      visibility: idea.visibility,
     };
     
     res.json(processedIdea);
@@ -343,17 +344,32 @@ authenticatedRouter.get("/:id", async (req: AuthRequest, res: Response) => {
 // Update idea (owner only)
 authenticatedRouter.put("/:id", async (req: AuthRequest, res) => {
   const { id } = req.params;
-  const { title, caption, description } = req.body;
+  const { title, caption, description, visibility } = req.body;
   const idea = await prisma.idea.findUnique({ where: { id } });
   if (!idea) return res.status(404).json({ error: "Idea not found" });
   if (idea.ownerId !== req.user!.id && req.user!.userRole !== "ADMIN") {
     return res.status(403).json({ error: "Not authorized" });
   }
+
+  // Update only the fields provided
+  const updateData: any = {};
+  if (typeof title !== "undefined") updateData.title = title;
+  if (typeof caption !== "undefined") updateData.caption = caption;
+  if (typeof description !== "undefined") updateData.description = description;
+  if (typeof visibility !== "undefined") updateData.visibility = visibility;
+
   const updated = await prisma.idea.update({
     where: { id },
-    data: { title, caption, description },
+    data: updateData,
+    include: {
+      collaborators: { include: { user: true } }
+    }
   });
-  res.json(updated);
+
+  res.json({
+    ...updated,
+    collaborators: updated.collaborators.map(c => c.user.name) // return only names
+  });
 });
 
 // Delete idea (owner or admin)

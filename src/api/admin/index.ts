@@ -49,6 +49,7 @@ router.post("/approve-idea", requireAdmin, async (req: AuthRequest, res) => {
           description: submission.description,
           approved: true,
           ownerId: submission.ownerId,
+          visibility: submission.visibility as any || 'PUBLIC', // Default to PUBLIC if not set
         }
       });
       await prisma.ideaSubmission.update({
