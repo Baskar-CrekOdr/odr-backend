@@ -7,6 +7,8 @@ import analyticsRoutes from "./analytics";
 import approveIdeaRoutes from "./approve-idea";
 import approveMentorRoutes from "./approve-mentor";
 import { logAuditEvent } from "../../lib/auditLog";
+import * as TwilioService from "../email/twilio";
+import * as Enum from  "../../utils/enum";
 
 const router = Router();
 router.use(authenticateJWT);
@@ -61,6 +63,26 @@ router.post("/approve-idea", requireAdmin, async (req: AuthRequest, res) => {
           reviewedBy: req.user?.id,
         }
       });
+
+      if (Array.isArray(submission.inviteCollaborators) && submission.inviteCollaborators.length > 0) {
+        await prisma.ideaCollabInviteStatus.createMany({
+          data: submission.inviteCollaborators.map((collaboratorId: string) => ({
+            userid: collaboratorId,
+            ideaid: idea.id,
+            activity: true,
+            invitestatus: Enum.InviteStatus.PENDING  // ✅ using enum
+          })),
+          skipDuplicates: true, // ✅ prevent duplicate inserts
+        });
+
+     try {
+      await TwilioService.sendEmail(submission.inviteCollaborators, "idea_request_collaborate",ideaId);
+      console.log(`Approval email sent to owner ${submission.ownerId}`);
+      } catch (mailError: any) {
+        console.error("Failed to send approval email:", mailError.message);
+      }
+    }
+
       success = true;
       message = 'Idea submission approved and idea created.';
       await logAuditEvent({
@@ -73,6 +95,13 @@ router.post("/approve-idea", requireAdmin, async (req: AuthRequest, res) => {
         message,
         ipAddress: req.ip,
       });
+
+    try {
+      await TwilioService.sendEmail([submission.ownerId], "idea_approved_innovator",ideaId);
+      console.log(`Approval email sent to owner ${submission.ownerId}`);
+    } catch (mailError: any) {
+      console.error("Failed to send approval email:", mailError.message);
+    }
       return res.json({ success: true, idea });
     }
 

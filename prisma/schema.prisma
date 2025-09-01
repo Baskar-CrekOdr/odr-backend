@@ -247,3 +247,38 @@ model MeetingLog {
   recordingUrl String?
   summaryText  String?
 }
+
+
+model EmailTemplate {
+  id          String  @id @default(uuid())
+  name        String  @unique
+  description String?
+  mailsubject String
+  mailcontent String
+  active_id   Boolean @default(true)
+}
+
+
+model Communication {
+  id         String   @id @default(uuid())
+  msgContent String
+  msgSubject String
+  recipient  String
+  userId     String
+  status     String?
+  messageId  String?   
+  reason     String?   
+  createdAt  DateTime @default(now())
+}
+
+model IdeaCollabInviteStatus {
+  id           String   @id @default(uuid())
+  userid       String
+  ideaid       String
+  activity     Boolean  @default(false)
+  invitestatus String   @default("PENDING")
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+}
+
+
