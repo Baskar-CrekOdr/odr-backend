@@ -358,6 +358,32 @@ authenticatedRouter.get("/:id", async (req: AuthRequest, res: Response) => {
   }
 });
 
+// Check if invite ID is valid for the logged-in user
+authenticatedRouter.get("/validate-invite/:inviteId", async (req: AuthRequest, res: Response) => {
+  const { inviteId } = req.params;
+
+  if (!req.user?.id) {
+    return res.status(401).json({ valid: false, error: "Unauthorized" });
+  }
+
+  const invite = await prisma.ideaCollabInviteStatus.findUnique({
+    where: { id: inviteId },
+    include: { idea: true }, // include idea info
+  });
+
+  // Validate: invite exists, pending, and belongs to user
+  const isValid = invite?.invitestatus === "PENDING" && invite?.userId === req.user.id;
+
+  if (!isValid) {
+    return res.json({ valid: false });
+  }
+
+  res.json({
+    valid: true,
+    ideaId: invite.ideaId,
+  });
+});
+
 // Update idea (owner only)
 authenticatedRouter.put("/:id", async (req: AuthRequest, res) => {
   const { id } = req.params;
