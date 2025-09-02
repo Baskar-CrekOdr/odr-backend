@@ -24,6 +24,8 @@ CREATE TABLE "public"."Communication" (
     "recipient" TEXT NOT NULL,
     "userId" TEXT NOT NULL,
     "status" "public"."Status" NOT NULL DEFAULT 'PENDING',
+    "messageId" TEXT,
+    "reason" TEXT,
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
 
     CONSTRAINT "Communication_pkey" PRIMARY KEY ("id")
@@ -47,9 +49,6 @@ CREATE UNIQUE INDEX "EmailTemplate_name_key" ON "public"."EmailTemplate"("name")
 
 -- CreateIndex
 CREATE UNIQUE INDEX "IdeaCollabInviteStatus_ideaId_userId_key" ON "public"."IdeaCollabInviteStatus"("ideaId", "userId");
-
--- AddForeignKey
-ALTER TABLE "public"."Communication" ADD CONSTRAINT "Communication_userId_fkey" FOREIGN KEY ("userId") REFERENCES "public"."User"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "public"."IdeaCollabInviteStatus" ADD CONSTRAINT "IdeaCollabInviteStatus_ideaId_fkey" FOREIGN KEY ("ideaId") REFERENCES "public"."Idea"("id") ON DELETE CASCADE ON UPDATE CASCADE;

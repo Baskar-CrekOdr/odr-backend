@@ -81,7 +81,6 @@ model User {
   comments          Comment[]
   likes             Like[]
   meetingLogs       MeetingLog[]
-  communications     Communication[]
   ideaCollabInviteStatus IdeaCollabInviteStatus[]
 }
 
@@ -286,10 +285,16 @@ model Communication {
 
 model IdeaCollabInviteStatus {
   id           String   @id @default(uuid())
-  userid       String
-  ideaid       String
+  ideaId   String
+  userId   String
   activity     Boolean  @default(false)
   invitestatus InviteStatus   @default(PENDING)
   createdAt    DateTime @default(now())
   updatedAt    DateTime @updatedAt
+
+  // Add the missing relation fields
+  idea Idea @relation(fields: [ideaId], references: [id], onDelete: Cascade)
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([ideaId, userId])
 }
