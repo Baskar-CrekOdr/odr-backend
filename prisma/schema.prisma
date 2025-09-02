@@ -42,6 +42,18 @@ enum Visibility {
   PRIVATE
 }
 
+enum Status {
+  PENDING
+  SUCCESS
+  FAILED
+}
+
+enum InviteStatus {
+  PENDING
+  ACCEPT
+  REJECT
+}
+
 model User {
   id            String   @id @default(uuid())
   name          String
@@ -69,6 +81,8 @@ model User {
   comments          Comment[]
   likes             Like[]
   meetingLogs       MeetingLog[]
+  communications     Communication[]
+  ideaCollabInviteStatus IdeaCollabInviteStatus[]
 }
 
 model Innovator {
@@ -139,6 +153,7 @@ model Idea {
   mentors       IdeaMentor[]
   comments      Comment[]
   likes         Like[]
+  ideaCollabInviteStatus IdeaCollabInviteStatus[]
 }
 
 model IdeaSubmission {
@@ -248,7 +263,6 @@ model MeetingLog {
   summaryText  String?
 }
 
-
 model EmailTemplate {
   id          String  @id @default(uuid())
   name        String  @unique
@@ -258,14 +272,13 @@ model EmailTemplate {
   active_id   Boolean @default(true)
 }
 
-
 model Communication {
   id         String   @id @default(uuid())
   msgContent String
   msgSubject String
   recipient  String
   userId     String
-  status     String?
+  status     Status @default(PENDING)
   messageId  String?   
   reason     String?   
   createdAt  DateTime @default(now())
@@ -276,9 +289,7 @@ model IdeaCollabInviteStatus {
   userid       String
   ideaid       String
   activity     Boolean  @default(false)
-  invitestatus String   @default("PENDING")
+  invitestatus InviteStatus   @default(PENDING)
   createdAt    DateTime @default(now())
   updatedAt    DateTime @updatedAt
 }
-
-

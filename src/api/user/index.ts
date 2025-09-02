@@ -50,6 +50,50 @@ router.get("/list", async (req: AuthRequest, res) => {
   }
 });
 
+// Search users (excluding current logged-in user)
+// router.get("/search", async (req: AuthRequest, res) => {
+//   try {
+//     if (!req.user) {
+//       return res.status(401).json({ error: "Authentication required" });
+//     }
+
+//     const search = (req.query.search as string) || "";
+
+//     // Require at least 3 characters before searching
+//     if (search.length < 3) {
+//       return res.json({ users: [] });
+//     }
+
+//     const users = await prisma.user.findMany({
+//       where: {
+//         id: { not: req.user.id },
+//         OR: [
+//           { name: { contains: search, mode: "insensitive" } },
+//           { email: { contains: search, mode: "insensitive" } },
+//         ],
+//       },
+//       select: {
+//         id: true,
+//         name: true,
+//         email: true,
+//       },
+//       take: 10, // limit suggestions
+//       orderBy: { name: "asc" },
+//     });
+
+//     res.json({
+//       users: users.map(user => ({
+//         value: user.id,
+//         label: user.name,
+//         supportLabel: user.email,
+//       })),
+//     });
+//   } catch (error) {
+//     console.error("Error searching users:", error);
+//     res.status(500).json({ error: "Internal server error" });
+//   }
+// });
+
 // Stats route
 router.get("/stats", async (req: AuthRequest, res) => {
   try {

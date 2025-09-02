@@ -309,11 +309,25 @@ authenticatedRouter.get("/:id", async (req: AuthRequest, res: Response) => {
           },
           orderBy: { createdAt: "asc" },
         },
+        ideaCollabInviteStatus: true
       },
     });
-    if (!idea)
+    if (!idea) {
       return res.status(404).json({ error: "Idea not found or not approved" });
-      
+    }
+
+    // // --- Authorization for private ideas ---
+    if (idea.visibility === "PRIVATE") {
+      const userId = req.user?.id;
+      const isOwner = idea.owner.id === userId;
+      const isAdmin = req.user?.userRole === "ADMIN";
+      const isCollaborator = idea.collaborators.some(c => c.user.id === userId);
+      const isMentor = idea.mentors.some(m => m.user.id === userId);
+
+      if (!(isOwner || isAdmin || isCollaborator || isMentor)) {
+        return res.status(403).json({ error: "You are not authorized to view this idea" });
+      }
+    }
     // Process role-specific fields for owner and team members
     const processedIdea = {
       ...idea,
