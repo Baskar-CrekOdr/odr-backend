@@ -323,8 +323,11 @@ authenticatedRouter.get("/:id", async (req: AuthRequest, res: Response) => {
       const isAdmin = req.user?.userRole === "ADMIN";
       const isCollaborator = idea.collaborators.some(c => c.user.id === userId);
       const isMentor = idea.mentors.some(m => m.user.id === userId);
-
-      if (!(isOwner || isAdmin || isCollaborator || isMentor)) {
+      const isInvited = idea.ideaCollabInviteStatus?.some(
+        (invite: { userId: string; invitestatus: string }) =>
+          invite.userId === userId && invite.invitestatus === "PENDING"
+      );
+      if (!(isOwner || isAdmin || isCollaborator || isMentor) && !isInvited) {
         return res.status(403).json({ error: "You are not authorized to view this idea" });
       }
     }

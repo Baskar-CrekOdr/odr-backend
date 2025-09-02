@@ -2,10 +2,8 @@ import dotenv from "dotenv";
 import path from "path";
 
 // Determine which environment file to load
-// const environment = process.env.NODE_ENV || 'production';
-// const envFile = environment === 'production' ? '.env.production' : '.env.development';
-const environment = 'development';
-const envFile ='.env.development';
+const environment = process.env.NODE_ENV || 'production';
+const envFile = environment === 'production' ? '.env.production' : '.env.development';
 
 // Load the appropriate environment file
 dotenv.config({ path: path.resolve(process.cwd(), envFile) });
