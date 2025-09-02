@@ -67,8 +67,8 @@ router.post("/approve-idea", requireAdmin, async (req: AuthRequest, res) => {
       if (Array.isArray(submission.inviteCollaborators) && submission.inviteCollaborators.length > 0) {
         await prisma.ideaCollabInviteStatus.createMany({
           data: submission.inviteCollaborators.map((collaboratorId: string) => ({
-            userid: collaboratorId,
-            ideaid: idea.id,
+            userId: collaboratorId,
+            ideaId: idea.id,
             activity: true,
             invitestatus: Enum.InviteStatus.PENDING  // ✅ using enum
           })),

@@ -2,6 +2,7 @@ import { Router, Response, NextFunction } from "express";
 import { authenticateJWT } from "../../middleware/auth";
 import { AuthRequest } from "../../types/auth";
 import prisma from "../../lib/prisma";
+import * as Enum from  "../../utils/enum";
 
 // Create routers for different auth levels
 const router = Router();
@@ -136,6 +137,16 @@ authenticatedRouter.post("/:ideaId/join-collaborator", async (req: AuthRequest, 
       data: { userId, ideaId },
       include: { user: true }
     });
+    await prisma.ideaCollabInviteStatus.updateMany({
+      where: {
+        ideaId,
+        userId
+      },
+      data: {
+        invitestatus: Enum.InviteStatus.ACCEPTED,
+        updatedAt: new Date()
+      }
+    });
     
     res.status(201).json({
       success: true,
@@ -178,6 +189,17 @@ authenticatedRouter.delete("/:ideaId/leave-collaborator", async (req: AuthReques
       }
     });
     
+        await prisma.ideaCollabInviteStatus.updateMany({
+      where: {
+        ideaId,
+        userId
+      },
+      data: {
+        invitestatus: Enum.InviteStatus.REJECTED,
+        updatedAt: new Date()
+      }
+    });
+
     res.json({
       success: true,
       message: "Successfully left collaboration"
