@@ -167,15 +167,26 @@ authenticatedRouter.delete("/:ideaId/leave-collaborator", async (req: AuthReques
   
   try {
     // Delete the collaborator record using a findFirst + delete approach
-    const collaboration = await prisma.ideaCollaborator.findFirst({
+     const collaboration = await prisma.ideaCollaborator.findUnique({
       where: {
-        AND: [
-          { ideaId: ideaId },
-          { userId: userId }
-        ]
+        ideaId_userId: {
+          ideaId,
+          userId
+        }
       }
     });
-    
+
+     await prisma.ideaCollabInviteStatus.updateMany({
+      where: {
+        ideaId,
+        userId
+      },
+      data: {
+        invitestatus: Enum.InviteStatus.REJECTED,
+        updatedAt: new Date()
+      }
+    });
+
     if (!collaboration) {
       return res.status(404).json({
         success: false,
@@ -189,17 +200,7 @@ authenticatedRouter.delete("/:ideaId/leave-collaborator", async (req: AuthReques
       }
     });
     
-        await prisma.ideaCollabInviteStatus.updateMany({
-      where: {
-        ideaId,
-        userId
-      },
-      data: {
-        invitestatus: Enum.InviteStatus.REJECTED,
-        updatedAt: new Date()
-      }
-    });
-
+   
     res.json({
       success: true,
       message: "Successfully left collaboration"
