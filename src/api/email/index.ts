@@ -1,5 +1,5 @@
 import express, { Request, Response } from "express";
-import testTwilioHandler from "./twilio";
+// import testTwilioHandler from "./twilio";
 
 
 import { authenticateJWT } from "../../middleware/auth";
@@ -30,7 +30,7 @@ async function testHandler(req: Request, res: Response) {
 
 // ✅ register routes
 
-router.post("/testTwilio", authLimiter, testTwilioHandler);
+// router.post("/testTwilio", authLimiter, testTwilioHandler);
 
 
 

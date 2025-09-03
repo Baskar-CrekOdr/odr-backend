@@ -5,93 +5,93 @@ import * as Enum from  "../../utils/enum";
 
 sgMail.setApiKey(process.env.SENDGRID_API_KEY!);
 
-// Test email endpoint
-export default async function testTwilioHandler(req: Request, res: Response) {
-  try {
-    console.log("test api call");
+// // Test email endpoint
+// export default async function testTwilioHandler(req: Request, res: Response) {
+//   try {
+//     console.log("test api call");
 
-    const msg = {
-      to: [
-        "nirmalrajgn@gmail.com",
-        "basker@crekodr.com",
-      ],
-      from: process.env.SENDGRID_FROM_EMAIL!, // ✅ Must be verified in SendGrid
-      subject: "Hello from ODR Lab 🚀",
-      text: "This is a plain text email.",
-      html: `
-      <html>
-        <head>
-          <meta charset="UTF-8" />
-          <title>Idea Collaboration Invitation</title>
-        </head>
-        <body style="margin:0; padding:0; font-family: Arial, sans-serif; background-color:#f7f7f7;">
-          <table width="100%" border="0" cellspacing="0" cellpadding="0" style="background-color:#f7f7f7; padding:30px 0;">
-            <tr>
-              <td align="center">
-                <table width="600" border="0" cellspacing="0" cellpadding="0" style="background:#ffffff; border-radius:8px; overflow:hidden; box-shadow:0 2px 6px rgba(0,0,0,0.1);">
-                  <!-- Header -->
-                  <tr>
-                    <td align="center" style="background-color:#4a90e2; padding:20px;">
-                      <h1 style="margin:0; color:#ffffff; font-size:24px;">Idea Approved & Published</h1>
-                    </td>
-                  </tr>
-                  <!-- Body -->
-                  <tr>
-                    <td style="padding:30px; color:#333333; font-size:16px; line-height:1.6;">
-                      <p style="margin-top:0;">Hello,</p>
-                      <p>
-                        We’re excited to let you know that the idea submitted by 
-                        <strong style="color:#4a90e2;">{{user1}}</strong> has been
-                        <strong>approved and published</strong> by the admin.
-                      </p>
-                      <p>
-                        You have been invited as a <strong>collaborator</strong> on this idea by 
-                        <strong style="color:#4a90e2;">{{user1}}</strong>.
-                      </p>
-                      <p style="margin-bottom:30px;">
-                        Click the button below to view and collaborate on the idea:
-                      </p>
-                      <!-- CTA Button -->
-                      <table border="0" cellspacing="0" cellpadding="0" align="center">
-                        <tr>
-                          <td align="center" bgcolor="#4a90e2" style="border-radius:6px;">
-                            <a href="{{ideaLink}}" target="_blank" 
-                              style="display:inline-block; padding:12px 24px; font-size:16px; color:#ffffff; text-decoration:none; font-weight:bold; border-radius:6px; background-color:#4a90e2;">
-                              View Idea
-                            </a>
-                          </td>
-                        </tr>
-                      </table>
-                    </td>
-                  </tr>
-                  <!-- Footer -->
-                  <tr>
-                    <td style="padding:20px; background-color:#f0f0f0; text-align:center; font-size:12px; color:#888888;">
-                      <p style="margin:0;">You’re receiving this email because you were invited as a collaborator.</p>
-                      <p style="margin:0;">&copy; {{year}} Your App Name. All rights reserved.</p>
-                    </td>
-                  </tr>
-                </table>
-              </td>
-            </tr>
-          </table>
-        </body>
-      </html>
-      `,
-    };
+//     const msg = {
+//       to: [
+//         "nirmalrajgn@gmail.com",
+//         "basker@crekodr.com",
+//       ],
+//       from: process.env.SENDGRID_FROM_EMAIL!, // ✅ Must be verified in SendGrid
+//       subject: "Hello from ODR Lab 🚀",
+//       text: "This is a plain text email.",
+//       html: `
+//       <html>
+//         <head>
+//           <meta charset="UTF-8" />
+//           <title>Idea Collaboration Invitation</title>
+//         </head>
+//         <body style="margin:0; padding:0; font-family: Arial, sans-serif; background-color:#f7f7f7;">
+//           <table width="100%" border="0" cellspacing="0" cellpadding="0" style="background-color:#f7f7f7; padding:30px 0;">
+//             <tr>
+//               <td align="center">
+//                 <table width="600" border="0" cellspacing="0" cellpadding="0" style="background:#ffffff; border-radius:8px; overflow:hidden; box-shadow:0 2px 6px rgba(0,0,0,0.1);">
+//                   <!-- Header -->
+//                   <tr>
+//                     <td align="center" style="background-color:#4a90e2; padding:20px;">
+//                       <h1 style="margin:0; color:#ffffff; font-size:24px;">Idea Approved & Published</h1>
+//                     </td>
+//                   </tr>
+//                   <!-- Body -->
+//                   <tr>
+//                     <td style="padding:30px; color:#333333; font-size:16px; line-height:1.6;">
+//                       <p style="margin-top:0;">Hello,</p>
+//                       <p>
+//                         We’re excited to let you know that the idea submitted by 
+//                         <strong style="color:#4a90e2;">{{user1}}</strong> has been
+//                         <strong>approved and published</strong> by the admin.
+//                       </p>
+//                       <p>
+//                         You have been invited as a <strong>collaborator</strong> on this idea by 
+//                         <strong style="color:#4a90e2;">{{user1}}</strong>.
+//                       </p>
+//                       <p style="margin-bottom:30px;">
+//                         Click the button below to view and collaborate on the idea:
+//                       </p>
+//                       <!-- CTA Button -->
+//                       <table border="0" cellspacing="0" cellpadding="0" align="center">
+//                         <tr>
+//                           <td align="center" bgcolor="#4a90e2" style="border-radius:6px;">
+//                             <a href="{{ideaLink}}" target="_blank" 
+//                               style="display:inline-block; padding:12px 24px; font-size:16px; color:#ffffff; text-decoration:none; font-weight:bold; border-radius:6px; background-color:#4a90e2;">
+//                               View Idea
+//                             </a>
+//                           </td>
+//                         </tr>
+//                       </table>
+//                     </td>
+//                   </tr>
+//                   <!-- Footer -->
+//                   <tr>
+//                     <td style="padding:20px; background-color:#f0f0f0; text-align:center; font-size:12px; color:#888888;">
+//                       <p style="margin:0;">You’re receiving this email because you were invited as a collaborator.</p>
+//                       <p style="margin:0;">&copy; {{year}} Your App Name. All rights reserved.</p>
+//                     </td>
+//                   </tr>
+//                 </table>
+//               </td>
+//             </tr>
+//           </table>
+//         </body>
+//       </html>
+//       `,
+//     };
 
-    const response = await sgMail.send(msg);
-    console.log("Email sent:", response[0].statusCode);
+//     const response = await sgMail.send(msg);
+//     console.log("Email sent:", response[0].statusCode);
 
-    return res.json({
-      success: true,
-      message: "Email sent successfully",
-    });
-  } catch (error: any) {
-    console.error("Error sending email:", error.response?.body || error.message);
-    return res.status(500).json({ success: false, error: error.message });
-  }
-}
+//     return res.json({
+//       success: true,
+//       message: "Email sent successfully",
+//     });
+//   } catch (error: any) {
+//     console.error("Error sending email:", error.response?.body || error.message);
+//     return res.status(500).json({ success: false, error: error.message });
+//   }
+// }
 
 // Bulk email endpoint
 export  async function sendBulkEmailHandler(req: Request, res: Response) {
@@ -263,16 +263,35 @@ export async function sendTemplatedEmails(userIds: string[], templateName: strin
 
 export async function sendEmail(
   userIds: string[],
- templateName: string,
+  templateName: string,
   ideaId: string
 ) {
-  // 1️⃣ Fetch template
+  let userIdToInviteIdMap: Record<string, string> = {};
   const template = await prisma.emailTemplate.findUnique({
     where: { name: templateName },
   });
   if (!template) throw new Error(`Email template '${templateName}' not found`);
 
   // 2️⃣ Fetch users
+  let publisherUser = null;
+  if (templateName === Enum.EmailTemplate.COLLABORATOR_REQUEST && ideaId) {
+    const idea = await prisma.idea.findUnique({
+      where: { id: ideaId },
+    });
+    if (idea) {
+      publisherUser = await prisma.user.findUnique({
+        where: { id: idea.ownerId },
+      });
+
+      const collabInvites = await prisma.ideaCollabInviteStatus.findMany({
+        where: { ideaId: ideaId },
+      });
+      userIdToInviteIdMap = collabInvites.reduce((acc, invite) => {
+        acc[invite.userId] = invite.id;
+        return acc;
+      }, {} as Record<string, string>);
+    }
+  }
   const users = await prisma.user.findMany({
     where: { id: { in: userIds } },
   });
@@ -286,12 +305,15 @@ export async function sendEmail(
   // 🔹 Improved applyTemplate
   const applyTemplate = (content: string, user: any) => {
     let output = content;
+    // Correctly get the invite ID for the current user from the map
+    const invitecollab_id = userIdToInviteIdMap[user.id] ?? '';
 
     // Default dynamic replacements
     const replacements: Record<string, string> = {
       username: user?.name ?? "",
+      publisherName: publisherUser?.name ?? "",
       year: new Date().getFullYear().toString(),
-      ideaLink: `${Enum.DomainURL.ACCEPTIDEAURL}/${ideaId}`,
+      ideaLink: `${Enum.DomainURL.ACCEPTIDEAURL}${ideaId}?invite=${invitecollab_id}`,
     };
 
     // Replace placeholders in template
@@ -333,7 +355,7 @@ export async function sendEmail(
           recipient: user.email,
           userId: user.id,
           status: Enum.EmailStatus.SUCCESS,
-          messageId: messageId, 
+          messageId: messageId,
         },
       });
 
@@ -344,12 +366,13 @@ export async function sendEmail(
       // 4️⃣ Log FAILURE in Communication table
       await prisma.communication.create({
         data: {
-          msgContent: template.mailcontent,
-          msgSubject: template.mailsubject,
+          // Corrected: Log the personalized content that failed to send
+          msgContent: content,
+          msgSubject: subject,
           recipient: user.email,
           userId: user.id,
           status: Enum.EmailStatus.FAILED,
-          reason: err.message, 
+          reason: err.message,
         },
       });
 

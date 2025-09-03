@@ -186,19 +186,20 @@ authenticatedRouter.delete("/:ideaId/leave-collaborator", async (req: AuthReques
         updatedAt: new Date()
       }
     });
-
-    if (!collaboration) {
-      return res.status(404).json({
-        success: false,
-        message: "Collaboration not found"
+//command this to work on reject collaburation
+    // if (!collaboration) {
+    //   return res.status(404).json({
+    //     success: false,
+    //     message: "Collaboration not found"
+    //   });
+    // }
+  if (collaboration) {
+      await prisma.ideaCollaborator.delete({
+        where: {
+          id: collaboration.id
+        }
       });
     }
-    
-    await prisma.ideaCollaborator.delete({
-      where: {
-        id: collaboration.id
-      }
-    });
     
    
     res.json({

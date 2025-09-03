@@ -4,6 +4,8 @@ import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
 import { UserRole, MentorType } from "@prisma/client";
 import { z } from "zod";
+import * as TwilioService from "../email/twilio";
+import * as Enum from  "../../utils/enum";
 
 function sanitizeString(str: string): string {
   return str.replace(/<script.*?>.*?<\/script>/gi, "").replace(/[<>]/g, "");
@@ -271,7 +273,13 @@ export default async function signupHandler(req: Request, res: Response) {
     res.cookie("access_token", accessToken, getCookieOptions());
     res.cookie("refresh_token", refreshToken, getCookieOptions(true));
     // Fetch the complete user data including type-specific information
-    const userData = await getUserWithTypeData(user.id, user.userRole);
+    
+    const userData = await getUserWithTypeData(user.id, user.userRole)
+       try {
+      await TwilioService.sendEmail([user.id], Enum.EmailTemplate.WELCOME_EMAIL,"");
+      } catch (mailError: any) {
+        console.error("Failed to send welcome email:", mailError.message);
+      }
 
     // Always return user data only (never send token in response)
     return res.status(201).json({ user: userData });

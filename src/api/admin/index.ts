@@ -76,10 +76,9 @@ router.post("/approve-idea", requireAdmin, async (req: AuthRequest, res) => {
         });
 
      try {
-      await TwilioService.sendEmail(submission.inviteCollaborators, "idea_request_collaborate",ideaId);
-      console.log(`Approval email sent to owner ${submission.ownerId}`);
+      await TwilioService.sendEmail(submission.inviteCollaborators, Enum.EmailTemplate.COLLABORATOR_REQUEST,idea.id);
       } catch (mailError: any) {
-        console.error("Failed to send approval email:", mailError.message);
+        console.error("Failed to send approval Idea Collab:", mailError.message);
       }
     }
 
@@ -97,8 +96,7 @@ router.post("/approve-idea", requireAdmin, async (req: AuthRequest, res) => {
       });
 
     try {
-      await TwilioService.sendEmail([submission.ownerId], "idea_approved_innovator",ideaId);
-      console.log(`Approval email sent to owner ${submission.ownerId}`);
+      await TwilioService.sendEmail([submission.ownerId], Enum.EmailTemplate.IDEA_SUBMISSION_CONFIRMATION,idea.id);
     } catch (mailError: any) {
       console.error("Failed to send approval email:", mailError.message);
     }
